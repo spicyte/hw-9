@@ -1,0 +1,10 @@
+---
+- name: Deploy Web Application and Database
+  hosts: all
+  become: yes
+  vars:
+    db_host: "db.example.com"
+    app_host: "app.example.com"
+  roles:
+    - { role: db, when: "inventory_hostname == db_host" }
+    - { role: app, when: "inventory_hostname == app_host" }

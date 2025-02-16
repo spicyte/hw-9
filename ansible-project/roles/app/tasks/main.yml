@@ -1,0 +1,32 @@
+---
+- name: Install dependencies
+  apt:
+    name:
+      - nginx
+      - python3
+      - python3-pip
+    state: present
+
+- name: Deploy application files
+  copy:
+    src: files/app.py
+    dest: /var/www/app/
+
+- name: Start application
+  command: "nohup python3 /var/www/app/app.py &"
+
+- name: Configure Nginx
+  template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/sites-available/app
+
+- name: Enable Nginx site
+  file:
+    src: /etc/nginx/sites-available/app
+    dest: /etc/nginx/sites-enabled/app
+    state: link
+
+- name: Restart Nginx
+  service:
+    name: nginx
+    state: restarted
